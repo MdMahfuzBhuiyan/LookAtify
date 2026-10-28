@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>LookAtify capture test</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: system-ui, sans-serif; }
+
+      /* A sticky header, like the real ones. */
+      #sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        height: 70px;
+        background: rgb(18, 51, 102);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        font-size: 20px;
+      }
+
+      /* A fixed chat widget, like the ones that spoil a capture. */
+      #chat-widget {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 200;
+        width: 220px;
+        height: 140px;
+        background: rgb(192, 57, 43);
+        color: #fff;
+        padding: 16px;
+        font-size: 14px;
+      }
+
+      /* A fixed review badge, like the ones that become a false hotspot. */
+      #review-badge {
+        position: fixed;
+        right: 24px;
+        top: 120px;
+        z-index: 200;
+        width: 180px;
+        height: 60px;
+        background: rgb(230, 126, 34);
+        color: #fff;
+        padding: 12px;
+        font-size: 13px;
+      }
+
+      section {
+        min-height: 900px;
+        padding: 40px 24px;
+        border-bottom: 1px solid #ddd;
+      }
+      .hero { min-height: 1100px; background: linear-gradient(120deg, #f6f2e6, #e0c9a6); }
+
+      /* A marquee that would move between slices. */
+      #marquee {
+        overflow: hidden;
+        white-space: nowrap;
+        height: 60px;
+        background: #222;
+        color: #fff;
+        line-height: 60px;
+      }
+      #marquee-inner {
+        display: inline-block;
+        padding-left: 100%;
+        animation: slide 8s linear infinite;
+      }
+      @keyframes slide {
+        to { transform: translateX(-100%); }
+      }
+
+      /* A carousel that would move between slices. */
+      #carousel {
+        overflow: hidden;
+        height: 220px;
+      }
+      #carousel-track {
+        display: flex;
+        gap: 16px;
+        animation: drift 10s linear infinite alternate;
+      }
+      #carousel .card {
+        flex: 0 0 300px;
+        height: 220px;
+        background: rgb(142, 154, 175);
+        border-radius: 10px;
+        padding: 16px;
+        color: #fff;
+      }
+      @keyframes drift {
+        to { transform: translateX(-180px); }
+      }
+
+      /* A section that only appears once it has been scrolled past. */
+      #revealed { opacity: 0; transition: opacity 400ms; }
+      #revealed.is-visible { opacity: 1; }
+
+      /* An image that loads late. */
+      #late-image {
+        width: 600px;
+        height: 300px;
+        background: rgb(107, 142, 35);
+        display: block;
+      }
+
+      /* A distinctive footer, so a duplicated footer is easy to count. */
+      footer {
+        min-height: 500px;
+        padding: 40px 24px;
+        background: rgb(52, 73, 94);
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sticky-header">STICKY HEADER</div>
+
+    <section class="hero">
+      <h1>Hero section</h1>
+      <p>This is the top of the page.</p>
+    </section>
+
+    <section id="ready">
+      <h2>Ready to Build Something Amazing?</h2>
+      <p>This heading has to survive the slice boundary without being clipped.</p>
+      <div id="revealed"><p>REVEALED CONTENT</p></div>
+    </section>
+
+    <section>
+      <div id="marquee"><div id="marquee-inner">MARQUEE TEXT THAT MOVES</div></div>
+      <div id="carousel">
+        <div id="carousel-track">
+          <div class="card">CARD ONE</div>
+          <div class="card">CARD TWO</div>
+          <div class="card">CARD THREE</div>
+          <div class="card">CARD FOUR</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Premium nopCommerce Plugins</h2>
+      <img id="late-image" alt="" />
+    </section>
+
+    <section>
+      <h2>Technologies We Use</h2>
+      <p>Body copy for the technologies section.</p>
+    </section>
+
+    <section>
+      <h2>Why Hire Full-Time Developers</h2>
+      <p>Body copy that must not overlap anything else.</p>
+    </section>
+
+    <footer>
+      <div class="footer-logo">FOOTER LOGO</div>
+      <nav>FOOTER MENU</nav>
+      <p>Footer copy.</p>
+    </footer>
+
+    <div id="review-badge">LEAVE A REVIEW</div>
+    <div id="chat-widget">CHAT WIDGET</div>
+
+    <script>
+      // A widget that is injected after a delay, like a chat bubble.
+      setTimeout(() => {
+        const widget = document.createElement("div");
+        widget.id = "late-chat-widget";
+        widget.textContent = "LATE CHAT WIDGET";
+        Object.assign(widget.style, {
+          position: "fixed",
+          right: "24px",
+          bottom: "200px",
+          zIndex: "300",
+          width: "200px",
+          height: "80px",
+          background: "rgb(142, 68, 173)",
+          color: "#fff",
+          padding: "12px",
+          fontSize: "13px",
+        });
+        document.body.appendChild(widget);
+      }, 600);
+
+      // A reveal-on-scroll section.
+      const reveal = document.getElementById("revealed");
+      const observer = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        }
+      });
+      observer.observe(reveal);
+
+      // An image that loads late.
+      const image = document.getElementById("late-image");
+      setTimeout(() => {
+        image.src =
+          "data:image/svg+xml;utf8," +
+          encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300">' +
+              '<rect width="600" height="300" fill="rgb(107,142,35)"/>' +
+              '<text x="30" y="160" font-size="42" fill="#fff">LATE IMAGE</text>' +
+              "</svg>",
+          );
+      }, 900);
+    </script>
+  </body>
+</html>

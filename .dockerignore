@@ -1,0 +1,30 @@
+# The Docker build only needs the backend source and its requirements.
+# Everything else would only make the build context larger and slower.
+
+.git
+.gitignore
+.github
+
+# The extension and its build output are not part of the backend image.
+extension/
+dist/
+assets/
+docs/
+
+# Only one script is needed inside the image, for the "deploy.sh test" check.
+scripts/*
+!scripts/check-server-bands.py
+
+# The local environment and the virtualenv.
+backend/.venv/
+backend/.env
+backend/weights/
+backend/**/__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Local tooling.
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tmp-logs/

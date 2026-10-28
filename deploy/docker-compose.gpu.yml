@@ -1,0 +1,28 @@
+# LookAtify backend on an NVIDIA GPU.
+#
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml up --build
+#
+# The GPU image uses the CUDA build of torch. The host needs the NVIDIA
+# Container Toolkit, and the container is given the device through the
+# reservations block.
+#
+# Combine it with the HTTPS file for a remote deployment:
+#
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml \
+#                  -f deploy/docker-compose.tls.yml up --build
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.gpu
+    image: lookatify/backend-gpu:0.1.0
+    environment:
+      DEVICE: "cuda"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

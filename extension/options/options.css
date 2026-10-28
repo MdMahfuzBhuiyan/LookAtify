@@ -1,0 +1,188 @@
+/* LookAtify options page. */
+
+:root {
+  --brand: #51454e;
+  --brand-soft: #6b5d67;
+  --accent: #c2703d;
+  --surface: #ffffff;
+  --surface-alt: #f5f3f5;
+  --border: #e2dde1;
+  --text: #241f23;
+  --text-muted: #6d656b;
+  --success: #2e8b57;
+  --danger: #b4442f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #1c1a1c;
+    --surface-alt: #262326;
+    --border: #3a353a;
+    --text: #f0ecef;
+    --text-muted: #a79fa6;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* The `hidden` attribute is only a user-agent rule, so an author rule that
+   sets `display` would beat it and leave the element on screen. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--surface-alt);
+}
+
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.brand__mark {
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.brand__name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 650;
+}
+
+.brand__tagline {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.card {
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.card h2 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field__label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 550;
+}
+
+.field__hint {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.field--inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+input[type="url"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.button {
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 550;
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.button--primary {
+  color: #fff;
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.button--ghost {
+  background: transparent;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.saved,
+.connection {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.saved[data-tone="success"] {
+  color: var(--success);
+}
+
+.connection[data-tone="success"] {
+  color: var(--success);
+}
+
+.connection[data-tone="error"] {
+  color: var(--danger);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

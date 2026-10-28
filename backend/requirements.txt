@@ -1,0 +1,35 @@
+# LookAtify backend dependencies.
+#
+# Install with:
+#   python -m venv .venv && .venv/bin/pip install -r requirements.txt
+#
+# The DeepGaze implementation is installed from the official repository
+# because it is not published on PyPI. It pulls in the CLIP package for its
+# feature extractors, so both are pinned here.
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.12
+pydantic==2.9.2
+
+torch==2.14.1
+torchvision==0.29.1
+numpy==2.5.3
+Pillow==10.2.0
+opencv-python==4.10.0.84
+scipy==1.18.1
+boltons==25.0.0
+einops==0.8.1
+
+# Official DeepGaze PyTorch implementation (DeepGaze I / IIE / III).
+deepgaze-pytorch @ git+https://github.com/matthias-k/DeepGaze.git
+# CLIP is required by deepgaze_pytorch's feature extractor imports.
+clip @ git+https://github.com/openai/CLIP.git
+
+# Testing and local tooling.
+pytest==8.3.3
+httpx==0.27.2
+python-dotenv==1.0.1
+ruff==0.6.9
+black==24.8.0
+mypy==1.11.2

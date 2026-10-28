@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "LookAtify",
+  "version": "0.1.0",
+  "description": "Visual attention heatmaps for web pages — see what users look at first.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "lookatify@local.dev",
+      "strict_min_version": "115.0"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "LookAtify",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "background": {
+    "scripts": ["background/service-worker.js"],
+    "type": "module"
+  },
+  "permissions": ["activeTab", "scripting", "storage", "tabs", "unlimitedStorage"],
+  "host_permissions": [
+    "<all_urls>",
+    "http://127.0.0.1:8001/*",
+    "http://localhost:8001/*"
+  ],
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "analyze-full-page": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A"
+      },
+      "description": "Analyse the full page"
+    },
+    "analyze-viewport": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+V"
+      },
+      "description": "Analyse the visible area"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/brand/*", "icons/*", "lib/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; worker-src 'self'"
+  }
+}

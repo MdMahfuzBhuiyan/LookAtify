@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LookAtify — Attention Viewer</title>
+    <link rel="stylesheet" href="viewer.css" />
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="toolbar__group toolbar__group--brand">
+        <img class="toolbar__mark" src="../icons/icon-32.png" alt="" width="24" height="24" />
+        <span class="toolbar__brand" id="brand-name">LookAtify</span>
+      </div>
+
+      <div class="toolbar__group" role="group" aria-label="View mode">
+        <button class="chip" type="button" data-mode="blended" aria-pressed="true">Blended</button>
+        <button class="chip" type="button" data-mode="split" aria-pressed="false">Split</button>
+        <button class="chip" type="button" data-mode="heatmap" aria-pressed="false">Heatmap</button>
+        <button class="chip" type="button" data-mode="original" aria-pressed="false">Original</button>
+      </div>
+
+      <div class="toolbar__group">
+        <label class="control control--slider">
+          <span>Opacity</span>
+          <input type="range" id="opacity" min="0" max="100" step="1" value="55" />
+          <output id="opacity-value">55%</output>
+        </label>
+      </div>
+
+      <div class="toolbar__group">
+        <label class="control">
+          <span>Colormap</span>
+          <select id="colormap">
+            <option value="jet">Jet</option>
+            <option value="turbo">Turbo</option>
+            <option value="viridis">Viridis</option>
+            <option value="hot">Hot</option>
+            <option value="colorblind">Colour-blind safe</option>
+          </select>
+        </label>
+        <label class="control control--slider">
+          <span>Blur</span>
+          <input type="range" id="blur" min="0" max="20" step="1" value="0" />
+          <output id="blur-value">0</output>
+        </label>
+        <label class="control control--slider">
+          <span>Threshold</span>
+          <input type="range" id="threshold" min="0" max="100" step="1" value="0" />
+          <output id="threshold-value">0%</output>
+        </label>
+        <label class="control control--check">
+          <input type="checkbox" id="toggle-top-n" />
+          <span>Top-N</span>
+        </label>
+      </div>
+
+      <div class="toolbar__group">
+        <button class="icon-button" id="zoom-out" type="button" title="Zoom out">−</button>
+        <span class="zoom-value" id="zoom-value">100%</span>
+        <button class="icon-button" id="zoom-in" type="button" title="Zoom in">+</button>
+        <button class="chip" id="fit-width" type="button" title="Fit to width">Fit width</button>
+        <button class="chip" id="fit-screen" type="button" title="Fit to screen">Fit screen</button>
+        <button class="chip" id="zoom-reset" type="button" title="Reset zoom to 100%">100%</button>
+      </div>
+
+      <div class="toolbar__group toolbar__group--end">
+        <button class="chip" type="button" data-export="png">Export PNG</button>
+        <button class="chip" type="button" data-export="jpeg">Export JPEG</button>
+        <button class="icon-button" id="close" type="button" title="Close viewer">✕</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <div class="stage" id="stage">
+        <canvas id="canvas" aria-label="Attention heatmap preview"></canvas>
+        <div class="split-divider" id="split-divider" hidden></div>
+
+        <div class="placeholder" id="empty-state">
+          <img src="../icons/icon-128.png" alt="" width="64" height="64" />
+          <p>No analysis loaded yet.</p>
+          <p class="placeholder__hint">Run “Analyze Full Page” from the LookAtify popup.</p>
+        </div>
+
+        <div class="placeholder" id="loading-state" hidden>
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Preparing the heatmap…</p>
+        </div>
+
+        <div class="placeholder placeholder--error" id="error-state" hidden>
+          <p id="error-detail"></p>
+        </div>
+
+        <div class="legend" id="legend">
+          <span class="legend__label">Low</span>
+          <span class="legend__bar" id="legend-bar"></span>
+          <span class="legend__label">High</span>
+        </div>
+      </div>
+
+      <aside class="panel" id="panel">
+        <button class="panel__toggle" id="panel-toggle" type="button" aria-expanded="true">
+          Summary
+        </button>
+        <div class="panel__body">
+          <section class="panel__section">
+            <h2 class="panel__title">Attention summary</h2>
+            <div class="summary" id="summary"></div>
+          </section>
+
+          <section class="panel__section">
+            <h2 class="panel__title">Top attention points</h2>
+            <ul class="top-points" id="top-points"></ul>
+          </section>
+
+          <section class="panel__section">
+            <h2 class="panel__title">Keyboard shortcuts</h2>
+            <dl class="shortcuts">
+              <dt>1 – 4</dt>
+              <dd>Switch view mode</dd>
+              <dt>+ / −</dt>
+              <dd>Zoom in / out</dd>
+              <dt>0</dt>
+              <dd>Fit to width</dd>
+              <dt>H</dt>
+              <dd>Toggle heatmap</dd>
+              <dt>E</dt>
+              <dd>Export PNG</dd>
+              <dt>Esc</dt>
+              <dd>Close viewer</dd>
+            </dl>
+          </section>
+        </div>
+      </aside>
+    </main>
+
+    <script type="module" src="viewer.js"></script>
+  </body>
+</html>

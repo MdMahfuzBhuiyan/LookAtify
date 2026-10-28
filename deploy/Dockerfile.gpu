@@ -1,0 +1,87 @@
+# syntax=docker/dockerfile:1
+
+# ---- LookAtify backend, CUDA build -------------------------------------
+# The same service as deploy/Dockerfile, but with the CUDA build of torch so
+# the model runs on an NVIDIA GPU. Use it on a machine that has one:
+#
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml up --build
+#
+# The CUDA libraries are only needed at run time, so they are installed
+# without keeping the package lists around.
+
+# The CUDA runtime. The version matches the CUDA libraries that the pinned
+# torch wheel carries (cuda-toolkit 13.0.3), so the container and the host
+# driver agree.
+FROM nvidia/cuda:13.0.3-cudnn-runtime-ubuntu22.04
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+WORKDIR /app
+
+# numpy and scipy are pinned to versions that need Python 3.12 or newer, and
+# the image's own Python is older than that, so a newer one is installed
+# from the deadsnakes repository.
+#
+# libGL and libglib are needed by opencv-python; libjpeg/png by Pillow.
+# curl is used by the health check, and git by pip: two of the requirements
+# are installed straight from a git repository.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        software-properties-common \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3.12 \
+        python3.12-venv \
+        python3.12-dev \
+        libgl1 \
+        libglib2.0-0 \
+        curl \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+# The Python on the PATH is the one with the requirements.
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 \
+    && python3.12 -m ensurepip --upgrade
+
+# The scripts that pip installs live next to the interpreter, so they have to
+# be on the PATH as well for "uvicorn" to be found.
+ENV PATH="/usr/local/bin:/usr/bin:${PATH}"
+
+# Install the dependencies first so the layer is cached across code changes.
+#
+# The torch wheel on PyPI carries its own CUDA libraries, so no separate
+# torch index is needed. The older cu124 index only goes up to torch 2.5.1
+# and would drag the pinned version backwards.
+COPY backend/requirements.txt ./
+RUN python3.12 -m pip install --no-cache-dir -r requirements.txt \
+    && apt-get purge -y --auto-remove git \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY backend/app ./app
+
+# The check script is used by "deploy.sh test" when there is no local
+# Python environment to run it with.
+COPY scripts/check-server-bands.py ./scripts/check-server-bands.py
+
+# The centre-bias prior is cached here so it survives restarts.
+ENV MODEL_WEIGHTS_DIR=/app/weights
+RUN mkdir -p /app/weights
+
+# Run as a non-root user.
+RUN useradd --create-home --uid 10001 lookatify \
+    && chown -R lookatify:lookatify /app
+USER lookatify
+
+EXPOSE 8001
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
+    CMD curl -fsS http://127.0.0.1:8001/health || exit 1
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]

@@ -1,0 +1,27 @@
+# LookAtify backend behind a reverse proxy.
+#
+# The extension refuses to talk to a remote server over plain HTTP, so a
+# deployment that is not on the same machine as the browser needs HTTPS.
+# This is a ready-made Caddy configuration: Caddy obtains and renews the
+# certificate on its own.
+#
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.tls.yml up --build
+#
+# The API is then available on https://your-host.
+
+{
+	# The email address for the certificate's expiry notices.
+	email {$ACME_EMAIL:admin@example.com}
+}
+
+{$LOOKATIFY_DOMAIN:localhost} {
+	encode zstd gzip
+
+	# The upload limit has to match the API's own limit, otherwise the proxy
+	# rejects a page before the API sees it.
+	request_body {
+		max_size 30MB
+	}
+
+	reverse_proxy api:8001
+}

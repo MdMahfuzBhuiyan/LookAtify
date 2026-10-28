@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Weights and caches (the DeepGaze weights are ~400 MB)
+backend/weights/
+*.pth
+*.npy
+
+# Environment
+.env
+
+# Node
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+
+# The logs the check scripts write
+.tmp-logs/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp

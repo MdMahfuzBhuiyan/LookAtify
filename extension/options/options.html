@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LookAtify Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="brand">
+        <img class="brand__mark" src="../icons/icon-48.png" alt="" width="32" height="32" />
+        <div>
+          <h1 class="brand__name">LookAtify</h1>
+          <p class="brand__tagline">Visual attention heatmaps for web pages</p>
+        </div>
+      </header>
+
+      <form id="settings-form" novalidate>
+        <section class="card">
+          <h2>Analysis server</h2>
+          <label class="field">
+            <span class="field__label">Server URL</span>
+            <input
+              type="url"
+              id="server-url"
+              name="serverUrl"
+              placeholder="http://127.0.0.1:8001"
+              autocomplete="off"
+            />
+            <span class="field__hint">
+              Plain HTTP is only allowed for localhost. Use HTTPS for any remote server.
+            </span>
+          </label>
+
+          <label class="field">
+            <span class="field__label">API token</span>
+            <input type="password" id="api-token" name="apiToken" autocomplete="off" />
+            <span class="field__hint">Leave empty when the backend runs without a token.</span>
+          </label>
+
+          <div class="row">
+            <button class="button" type="button" id="test-connection">Test connection</button>
+            <span class="connection" id="connection-result" role="status"></span>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Viewer defaults</h2>
+
+          <label class="field">
+            <span class="field__label">Default view mode</span>
+            <select id="default-mode" name="defaultMode">
+              <option value="blended">Blended</option>
+              <option value="split">Split</option>
+              <option value="heatmap">Heatmap only</option>
+              <option value="original">Original only</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Default opacity — <span id="opacity-value">55%</span></span>
+            <input type="range" id="default-opacity" name="defaultOpacity" min="0" max="100" step="1" />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Default colormap</span>
+            <select id="default-colormap" name="defaultColormap">
+              <option value="jet">Jet (green → red)</option>
+              <option value="turbo">Turbo</option>
+              <option value="viridis">Viridis</option>
+              <option value="hot">Hot</option>
+              <option value="colorblind">Colour-blind safe</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Default export format</span>
+            <select id="default-export" name="defaultExportFormat">
+              <option value="png">PNG</option>
+              <option value="jpeg">JPEG</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="card">
+          <h2>Capture</h2>
+
+          <label class="field">
+            <span class="field__label">Maximum page height — <span id="height-value">16000 px</span></span>
+            <input type="range" id="max-height" name="maxCaptureHeight" min="2000" max="32000" step="500" />
+            <span class="field__hint">Longer pages are truncated at this height.</span>
+          </label>
+
+          <label class="field field--inline">
+            <input type="checkbox" id="viewport-only" name="viewportOnly" />
+            <span>Analyse the visible area only by default</span>
+          </label>
+
+          <label class="field field--inline">
+            <input type="checkbox" id="debug-capture" name="debugCapture" />
+            <span>Show the raw capture slices after every analysis</span>
+            <span class="field__hint">
+              Opens a page with the frames the browser returned and the position each one was
+              stitched at. Useful when the screenshot has seams or repeated content.
+            </span>
+          </label>
+        </section>
+
+        <section class="card">
+          <h2>Saved analyses</h2>
+          <p class="field__hint">
+            Each analysis keeps the screenshot and the heatmap on this device. The
+            newest ones are kept and the older ones are removed automatically.
+          </p>
+          <div class="row">
+            <button class="button" type="button" id="clear-analyses">Clear saved analyses</button>
+            <span class="connection" id="clear-result" role="status"></span>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button class="button button--primary" type="submit">Save settings</button>
+          <button class="button button--ghost" type="button" id="reset">Reset to defaults</button>
+          <span class="saved" id="saved" role="status"></span>
+        </div>
+      </form>
+    </main>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+# LookAtify backend — Docker Compose stack.
+#
+#   docker compose -f deploy/docker-compose.yml up --build
+#
+# The API is then available on http://127.0.0.1:8001.
+#
+# For a machine with an NVIDIA GPU, add the GPU file:
+#
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml up --build
+#
+# For a deployment that is not on the same machine as the browser, add the
+# HTTPS file as well:
+#
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml \
+#                  -f deploy/docker-compose.tls.yml up --build
+
+services:
+  api:
+    build:
+      # The image is built from the repository root so the backend source and
+      # its requirements stay in one place.
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: lookatify/backend:0.1.0
+    container_name: lookatify-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8001:8001"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "${PORT:-8001}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+      MODEL_NAME: "${MODEL_NAME:-deepgaze2e}"
+      DEVICE: "${DEVICE:-auto}"
+      LONG_PAGE_STRATEGY: "${LONG_PAGE_STRATEGY:-tile}"
+      CENTER_BIAS: "${CENTER_BIAS:-uniform}"
+      # Set a long random value in production, then put the same value in the
+      # extension settings.
+      API_TOKEN: "${API_TOKEN:-}"
+      RATE_LIMIT_PER_MINUTE: "${RATE_LIMIT_PER_MINUTE:-30}"
+      MAX_UPLOAD_BYTES: "${MAX_UPLOAD_BYTES:-26214400}"
+      CORS_ORIGINS: "${CORS_ORIGINS:-chrome-extension://[a-p]{32},moz-extension://[0-9a-f\\-]{36},http://127.0.0.1:8001,http://localhost:8001}"
+      # The container has no GPU, so the model stays on the CPU.
+      OMP_NUM_THREADS: "${OMP_NUM_THREADS:-4}"
+    volumes:
+      # Keeps the downloaded DeepGaze weights and the centre-bias prior.
+      - model-cache:/app/weights
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 180s
+    # The model needs a moment to release its memory on shutdown.
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          # The model and one page of saliency need about 4 GB.
+          memory: 6G
+
+volumes:
+  model-cache:

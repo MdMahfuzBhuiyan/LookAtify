@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LookAtify</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="brand">
+      <img class="brand__mark" src="../icons/icon-48.png" alt="" width="32" height="32" />
+      <div class="brand__text">
+        <span class="brand__name">LookAtify</span>
+        <span class="brand__tagline">Visual attention heatmaps</span>
+      </div>
+      <span class="status" id="status-dot" title="Backend status" data-state="checking"></span>
+    </header>
+
+    <main>
+      <button class="button button--primary" id="analyze-full" type="button">
+        Analyze Full Page
+      </button>
+      <button class="button" id="analyze-viewport" type="button">Analyze Visible Area</button>
+
+      <section class="progress" id="progress" hidden>
+        <ol class="progress__steps" id="progress-steps">
+          <li data-step="capturing">Capturing</li>
+          <li data-step="uploading">Uploading</li>
+          <li data-step="analyzing">Analyzing</li>
+          <li data-step="rendering">Rendering</li>
+        </ol>
+        <div class="progress__bar"><div class="progress__fill" id="progress-fill"></div></div>
+        <p class="progress__elapsed" id="elapsed" aria-live="off"></p>
+        <button class="button button--ghost button--small" id="cancel" type="button">Cancel</button>
+      </section>
+
+      <p class="message" id="message" role="status" aria-live="polite" hidden></p>
+
+      <footer class="footer">
+        <a href="#" id="open-settings">Settings</a>
+        <span class="footer__sep">·</span>
+        <a href="#" id="open-history">History</a>
+      </footer>
+    </main>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

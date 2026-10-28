@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LookAtify — capture debug</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: system-ui, sans-serif;
+        background: #14161a;
+        color: #e8e8ea;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 16px;
+      }
+      h2 {
+        font-size: 13px;
+        margin: 0 0 8px;
+        color: #9aa0a6;
+      }
+      #summary {
+        background: #1e2127;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 24px;
+      }
+      dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 4px 16px;
+        margin: 0 0 16px;
+        font-size: 13px;
+      }
+      dt {
+        color: #9aa0a6;
+      }
+      dd {
+        margin: 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 4px 8px;
+        border-bottom: 1px solid #333;
+      }
+      .warnings {
+        margin: 0 0 16px;
+        padding-left: 20px;
+        font-size: 13px;
+        color: #f5b971;
+      }
+      .frame {
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 20px;
+      }
+      .frame img {
+        max-width: 100%;
+        display: block;
+        border: 1px solid #444;
+      }
+      .empty {
+        color: #9aa0a6;
+        font-size: 14px;
+      }
+      code {
+        background: #1e2127;
+        padding: 2px 5px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>LookAtify capture debug</h1>
+    <p class="empty">
+      Each frame below is exactly what the browser returned. The report shows where every frame
+      was stitched onto the canvas.
+    </p>
+    <div id="summary"></div>
+    <div id="frames"></div>
+    <script type="module" src="debug.js"></script>
+  </body>
+</html>

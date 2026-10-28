@@ -1,0 +1,25 @@
+{
+  "brand": {
+    "name": "LookAtify",
+    "primary": "#51454e",
+    "primary_rgb": [81, 69, 78],
+    "primary_soft": "#6b5d67",
+    "accent": "#c2703d",
+    "accent_rgb": [194, 112, 61],
+    "description": "Muted plum-grey sampled from the supplied LookAtify wordmark; the warm accent is derived from it and is used for heatmap highlights and call-to-action."
+  },
+  "heatmaps": {
+    "jet": ["#006837", "#28be5a", "#dcdc28", "#f0961e", "#dc281e"],
+    "turbo": ["#30123b", "#466be3", "#2ac7c4", "#97e03a", "#faa61e", "#be1e2d"],
+    "viridis": ["#440154", "#3b528b", "#21918c", "#5ec962", "#fde725"],
+    "hot": ["#000000", "#8c0000", "#dc4600", "#ffaa00", "#ffffd2"],
+    "colorblind": ["#0c2c5c", "#186e91", "#3caa9f", "#d7cd5a", "#faf5af"]
+  },
+  "usage": {
+    "logo_source": "assets/brand/lookatify-logo-source.png",
+    "wordmark_svg": "assets/brand/lookatify-wordmark.svg",
+    "monogram_svg": "assets/brand/lookatify-monogram.svg",
+    "logo_png": "assets/brand/lookatify-logo.png",
+    "icons": "extension/icons/icon-{16,32,48,128}.png"
+  }
+}

@@ -1,0 +1,41 @@
+# LookAtify backend behind an HTTPS reverse proxy.
+#
+#   docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.tls.yml up --build
+#
+# The browser extension refuses to talk to a remote server over plain HTTP,
+# so a deployment on another machine needs HTTPS. Caddy obtains and renews
+# the certificate on its own.
+#
+# Set the domain in deploy/.env:
+#
+#   LOOKATIFY_DOMAIN=heatmaps.example.com
+
+services:
+  api:
+    # The proxy talks to the API over the internal network, so the API does
+    # not publish its port on the host any more.
+    ports: !reset []
+    expose:
+      - "8001"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: lookatify-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      LOOKATIFY_DOMAIN: "${LOOKATIFY_DOMAIN:?set LOOKATIFY_DOMAIN in deploy/.env}"
+      ACME_EMAIL: "${ACME_EMAIL:-admin@example.com}"
+    volumes:
+      # The certificates are kept across restarts.
+      - caddy-data:/data
+      - caddy-config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - api
+
+volumes:
+  caddy-data:
+  caddy-config:
